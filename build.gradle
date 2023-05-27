@@ -16,14 +16,21 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates' }
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
+	implementation 'com.netflix.feign:feign-jackson:8.18.0'
 	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
