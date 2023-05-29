@@ -25,7 +25,11 @@ public class DishUseCase implements IDishServicePort {
     }
 
     @Override
-    public void updateDish(DishModel dishModel) {
-
+    public DishModel findDishById(Long dishId) {
+        try {
+            return this.dishPersistencePort.findDishById(dishId);
+        } catch (DomainException e) {
+            throw new DomainException(e.getMessage());
+        }
     }
 }

@@ -19,4 +19,8 @@ public interface IDishResponseMapper {
     @Mapping(source = "dishRequestDto.categoryRequestDto", target = "categoryRequestDto.id")
     @Mapping(source = "dishRequestDto.restaurantRequestDto", target = "restaurantRequestDto.id")
     DishResponseDto toDishResDto(DishRequestDto dishRequestDto);
+
+    @Mapping(source = "dishModel.categoryModel", target = "categoryRequestDto")
+    @Mapping(source = "dishModel.restaurantModel", target = "restaurantRequestDto")
+    DishResponseDto toDishResDtoFromModel(DishModel dishModel);
 }

@@ -6,5 +6,5 @@ public interface IDishPersistencePort {
 
     DishModel saveDish(DishModel dishModel);
 
-    void updateDish(DishModel dishModel);
+    DishModel findDishById(Long dishId);
 }

@@ -4,10 +4,12 @@ import com.pragma.plazoleta.domain.api.ICategoryServicePort;
 import com.pragma.plazoleta.domain.model.CategoryModel;
 import com.pragma.plazoleta.domain.model.DishModel;
 import com.pragma.plazoleta.domain.spi.IDishPersistencePort;
+import com.pragma.plazoleta.infrastructue.exception.RequestException;
 import com.pragma.plazoleta.infrastructue.out.jpa.entity.DishEntity;
 import com.pragma.plazoleta.infrastructue.out.jpa.mapper.IDishEntityMapper;
 import com.pragma.plazoleta.infrastructue.out.jpa.repository.IDishRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
 public class DishJpaAdapter implements IDishPersistencePort {
@@ -25,7 +27,8 @@ public class DishJpaAdapter implements IDishPersistencePort {
     }
 
     @Override
-    public void updateDish(DishModel dishModel) {
-
+    public DishModel findDishById(Long dishId) {
+        DishEntity dishEntity = dishRepository.findById(dishId).orElseThrow(() -> new RequestException("El plato no fue encontrado", HttpStatus.NOT_FOUND));
+        return dishEntityMapper.toDishModel(dishEntity);
     }
 }
