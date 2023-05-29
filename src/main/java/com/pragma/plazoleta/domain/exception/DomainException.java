@@ -1,4 +1,4 @@
-package com.pragma.usuario.domain.exception;
+package com.pragma.plazoleta.domain.exception;
 
 
 public class DomainException extends RuntimeException{

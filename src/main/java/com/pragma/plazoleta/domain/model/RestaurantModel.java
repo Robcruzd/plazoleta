@@ -1,6 +1,6 @@
 package com.pragma.plazoleta.domain.model;
 
-import com.pragma.usuario.domain.exception.DomainException;
+import com.pragma.plazoleta.domain.exception.DomainException;
 
 public class RestaurantModel {
 

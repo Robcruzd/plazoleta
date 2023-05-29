@@ -1,4 +1,4 @@
-package com.pragma.usuario.infrastructue.exception;
+package com.pragma.plazoleta.infrastructue.exception;
 
 import org.springframework.http.HttpStatus;
 

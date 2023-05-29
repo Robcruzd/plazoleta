@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class RestaurantRequestDto {
 
+    private Long id;
     private String name;
     private Long nit;
     private String address;

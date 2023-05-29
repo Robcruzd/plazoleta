@@ -5,4 +5,6 @@ import com.pragma.plazoleta.application.dto.request.RestaurantRequestDto;
 public interface IRestaurantHandler {
 
     void saveRestaurant(RestaurantRequestDto restaurantRequestDto);
+
+    RestaurantRequestDto findRestaurantById(Long restaurantId);
 }

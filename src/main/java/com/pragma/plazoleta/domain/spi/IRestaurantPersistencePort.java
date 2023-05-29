@@ -4,5 +4,7 @@ import com.pragma.plazoleta.domain.model.RestaurantModel;
 
 public interface IRestaurantPersistencePort {
 
-    RestaurantModel saveRestaurant(RestaurantModel restaurantModel);
+    void saveRestaurant(RestaurantModel restaurantModel);
+
+    RestaurantModel findRestaurantById(Long restaurantId);
 }
