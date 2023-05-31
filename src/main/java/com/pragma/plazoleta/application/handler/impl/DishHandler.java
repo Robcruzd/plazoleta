@@ -52,8 +52,8 @@ public class DishHandler implements IDishHandler {
     public void updateDish(DishUpdateRequestDto dishUpdateRequestDto) {
         try {
             Long ownerId = 1L;
-            DishModel dishModel = this.dishServicePort.findDishById(dishUpdateRequestDto.getId());
-            RestaurantModel restaurantModel = this.restaurantServicePort.findRestaurantById(dishModel.getRestaurantModel().getId());
+            DishModel dishModel = dishServicePort.findDishById(dishUpdateRequestDto.getId());
+            RestaurantModel restaurantModel = restaurantServicePort.findRestaurantById(dishModel.getRestaurantModel().getId());
             RestaurantRequestDto restaurantRequestDto = restaurantRequesMapper.toRestaurantDto(restaurantModel);
             validateOwnerRestaurant.validate(restaurantRequestDto, ownerId);
             dishModel.setDescription(dishUpdateRequestDto.getDescription());
