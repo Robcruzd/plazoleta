@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,9 +35,10 @@ public class DishRestController {
             @ApiResponse(responseCode = "400", description = "Error en la solicitud", content = @Content)
     })
     @PostMapping("/")
-    public ResponseEntity<String> saveDish(@RequestBody DishRequestDto dishRequestDto) {
+    public ResponseEntity<String> saveDish(@RequestHeader("Authorization") String token,
+                                           @RequestBody DishRequestDto dishRequestDto) {
         try {
-            dishHandler.saveDish(dishRequestDto);
+            dishHandler.saveDish(dishRequestDto, token);
             return ResponseEntity.ok("Plato creado exitosamente");
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -49,9 +51,10 @@ public class DishRestController {
             @ApiResponse(responseCode = "400", description = "Error en la solicitud", content = @Content)
     })
     @PutMapping("/")
-    public ResponseEntity<String> updateDish(@RequestBody DishUpdateRequestDto dishUpdateRequestDto) {
+    public ResponseEntity<String> updateDish(@RequestHeader("Authorization") String token,
+                                             @RequestBody DishUpdateRequestDto dishUpdateRequestDto) {
         try {
-            dishHandler.updateDish(dishUpdateRequestDto);
+            dishHandler.updateDish(dishUpdateRequestDto, token);
             return ResponseEntity.ok("Plato actualizado exitosamente");
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -74,16 +75,16 @@ class DishHandlerTest {
         when(dishResponseMapper.toDishResDto(dishRequestDto)).thenReturn(dishResponseDto);
         when(restaurantServicePort.findRestaurantById(dishRequestDto.getRestaurantRequestDto())).thenReturn(restaurantModel);
         when(restaurantRequesMapper.toRestaurantDto(restaurantModel)).thenReturn(restaurantRequestDto);
-        when(validateOwnerRestaurant.validate(restaurantRequestDto, 1L)).thenReturn(true);
+        doNothing().when(validateOwnerRestaurant).validate(restaurantRequestDto, "token");
         when(dishResponseMapper.toDishModel(dishResponseDto)).thenReturn(dishModel);
         doNothing().when(dishServicePort).saveDish(dishModel);
 
-        assertDoesNotThrow(() -> dishHandler.saveDish(dishRequestDto));
+        assertDoesNotThrow(() -> dishHandler.saveDish(dishRequestDto, "token"));
 
         verify(dishResponseMapper, times(1)).toDishResDto(dishRequestDto);
         verify(restaurantServicePort, times(1)).findRestaurantById(dishRequestDto.getRestaurantRequestDto());
         verify(restaurantRequesMapper, times(1)).toRestaurantDto(restaurantModel);
-        verify(validateOwnerRestaurant, times(1)).validate(restaurantRequestDto, 1L);
+        verify(validateOwnerRestaurant, times(1)).validate(restaurantRequestDto, "token");
         verify(dishResponseMapper, times(1)).toDishModel(dishResponseDto);
         verify(dishServicePort, times(1)).saveDish(dishModel);
     }
@@ -99,9 +100,9 @@ class DishHandlerTest {
         when(restaurantServicePort.findRestaurantById(any())).thenReturn(restaurantModel);
         when(dishResponseMapper.toDishResDto(any())).thenReturn(dishResponseDto);
         when(restaurantRequesMapper.toRestaurantDto(any())).thenReturn(restaurantRequestDto);
-        when(validateOwnerRestaurant.validate(any(), any())).thenThrow(domainException);
+        doThrow(domainException).when(validateOwnerRestaurant).validate(any(), any());
 
-        assertThrows(ApplicationException.class, () -> dishHandler.saveDish(dishRequestDto));
+        assertThrows(ApplicationException.class, () -> dishHandler.saveDish(dishRequestDto, "token"));
 
         verify(dishResponseMapper, never()).toDishModel(any());
         verify(dishServicePort, never()).saveDish(any());
@@ -122,9 +123,9 @@ class DishHandlerTest {
         when(dishServicePort.findDishById(any())).thenReturn(dishModel);
         when(restaurantServicePort.findRestaurantById(any())).thenReturn(restaurantModel);
         when(restaurantRequesMapper.toRestaurantDto(any())).thenReturn(restaurantRequestDto);
-        when(validateOwnerRestaurant.validate(restaurantRequestDto, ownerId)).thenReturn(true);
+        doNothing().when(validateOwnerRestaurant).validate(restaurantRequestDto, "token");
 
-        dishHandler.updateDish(dishUpdateRequestDto);
+        dishHandler.updateDish(dishUpdateRequestDto, "token");
 
         verify(dishServicePort, times(1)).saveDish(dishModel);
     }

@@ -4,5 +4,5 @@ import com.pragma.plazoleta.application.dto.request.RestaurantRequestDto;
 
 public interface IValidateOwnerRestaurant {
 
-    boolean validate(RestaurantRequestDto restaurantRequestDto, Long ownerId);
+    void validate(RestaurantRequestDto restaurantRequestDto, String token);
 }

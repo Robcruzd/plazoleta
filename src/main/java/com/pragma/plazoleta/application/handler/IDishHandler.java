@@ -6,9 +6,9 @@ import com.pragma.plazoleta.application.dto.response.DishResponseDto;
 
 public interface IDishHandler {
 
-    void saveDish(DishRequestDto dishRequestDto);
+    void saveDish(DishRequestDto dishRequestDto, String token);
 
-    void updateDish(DishUpdateRequestDto dishUpdateRequestDto);
+    void updateDish(DishUpdateRequestDto dishUpdateRequestDto, String token);
 
     DishResponseDto findDishById(Long dishId);
 }

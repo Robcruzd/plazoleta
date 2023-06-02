@@ -32,14 +32,13 @@ public class DishHandler implements IDishHandler {
     private final IValidateOwnerRestaurant validateOwnerRestaurant;
 
     @Override
-    public void saveDish(DishRequestDto dishRequestDto) {
+    public void saveDish(DishRequestDto dishRequestDto, String token) {
         try {
-            Long ownerId = 1L;
             DishResponseDto dishResponseDto = this.dishResponseMapper.toDishResDto(dishRequestDto);
             RestaurantModel restaurantModel = this.restaurantServicePort.findRestaurantById(dishRequestDto.getRestaurantRequestDto());
             RestaurantRequestDto restaurantRequestDto = restaurantRequesMapper.toRestaurantDto(restaurantModel);
-            if (validateOwnerRestaurant.validate(restaurantRequestDto, ownerId))
-                dishResponseDto.setRestaurantRequestDto(restaurantRequestDto);
+            validateOwnerRestaurant.validate(restaurantRequestDto, token);
+            dishResponseDto.setRestaurantRequestDto(restaurantRequestDto);
             DishModel dishModel = this.dishResponseMapper.toDishModel(dishResponseDto);
             dishModel.validate();
             this.dishServicePort.saveDish(dishModel);
@@ -49,13 +48,12 @@ public class DishHandler implements IDishHandler {
     }
 
     @Override
-    public void updateDish(DishUpdateRequestDto dishUpdateRequestDto) {
+    public void updateDish(DishUpdateRequestDto dishUpdateRequestDto, String token) {
         try {
-            Long ownerId = 1L;
             DishModel dishModel = dishServicePort.findDishById(dishUpdateRequestDto.getId());
             RestaurantModel restaurantModel = restaurantServicePort.findRestaurantById(dishModel.getRestaurantModel().getId());
             RestaurantRequestDto restaurantRequestDto = restaurantRequesMapper.toRestaurantDto(restaurantModel);
-            validateOwnerRestaurant.validate(restaurantRequestDto, ownerId);
+            validateOwnerRestaurant.validate(restaurantRequestDto, token);
             dishModel.setDescription(dishUpdateRequestDto.getDescription());
             dishModel.setPrice(dishUpdateRequestDto.getPrecio());
             dishModel.validate();

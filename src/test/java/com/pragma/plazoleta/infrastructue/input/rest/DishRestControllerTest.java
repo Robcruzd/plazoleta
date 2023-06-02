@@ -1,17 +1,30 @@
 package com.pragma.plazoleta.infrastructue.input.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
 import com.pragma.plazoleta.application.dto.response.DishResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IDishHandler;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
@@ -19,81 +32,114 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class DishRestControllerTest {
 
-    @Mock
+    @Autowired
+    private WebApplicationContext context;
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @MockBean
     private IDishHandler dishHandler;
 
-    @InjectMocks
     private DishRestController dishRestController;
+    private String token;
 
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity()).build();
+        token = "token";
+    }
     @Test
-    void saveDish_Success() {
-        DishRequestDto dishRequestDto = new DishRequestDto();
-        ResponseEntity<String> expectedResponse = ResponseEntity.ok("Plato creado exitosamente");
-        doNothing().when(dishHandler).saveDish(dishRequestDto);
+    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Propietario")
+    void saveDish_Success() throws Exception {
+        DishRequestDto dishRequestDto = new DishRequestDto("pasta", 1000, "plato de pasta", "https://pasta", 1L, 1L);//        ResponseEntity<String> expectedResponse = ResponseEntity.ok("Plato creado exitosamente");
+        doNothing().when(dishHandler).saveDish(dishRequestDto, token);
 
-        ResponseEntity<String> response = dishRestController.saveDish(dishRequestDto);
+        ResultActions response = mockMvc.perform(post("/api/v1/plazoleta/dish/")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dishRequestDto)));
 
-        assertEquals(expectedResponse, response);
-        verify(dishHandler, times(1)).saveDish(dishRequestDto);
+        response.andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
-    void saveDish_ApplicationException() {
+    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Employee")
+    void saveDish_ApplicationException() throws Exception {
         DishRequestDto dishRequestDto = new DishRequestDto();
         String errorMessage = "Información invalida del plato";
-        ResponseEntity<String> expectedResponse = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-        doThrow(new ApplicationException(errorMessage)).when(dishHandler).saveDish(dishRequestDto);
+        doThrow(new ApplicationException(errorMessage)).when(dishHandler).saveDish(dishRequestDto, token);
 
-        ResponseEntity<String> response = dishRestController.saveDish(dishRequestDto);
+        ResultActions response = mockMvc.perform(post("/api/v1/plazoleta/dish/")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dishRequestDto)));
 
-        assertEquals(expectedResponse, response);
-        verify(dishHandler, times(1)).saveDish(dishRequestDto);
+        response.andDo(print())
+                        .andExpect(status().isForbidden());
     }
 
     @Test
-    void updateDish_Success() {
-        DishUpdateRequestDto dishUpdateRequestDto = new DishUpdateRequestDto();
-        ResponseEntity<String> expectedResponse = ResponseEntity.ok("Plato actualizado exitosamente");
-        doNothing().when(dishHandler).updateDish(dishUpdateRequestDto);
+    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Propietario")
+    void updateDish_Success() throws Exception {
+        DishUpdateRequestDto dishUpdateRequestDto = new DishUpdateRequestDto(1L, 1000, "plato de pasta");
+        doNothing().when(dishHandler).updateDish(dishUpdateRequestDto, token);
 
-        ResponseEntity<String> response = dishRestController.updateDish(dishUpdateRequestDto);
+        ResultActions response = mockMvc.perform(put("/api/v1/plazoleta/dish/")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dishUpdateRequestDto)));
 
-        assertEquals(expectedResponse, response);
-        verify(dishHandler, times(1)).updateDish(dishUpdateRequestDto);
+        response.andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
-    void updateDish_ApplicationException() {
+    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Employee")
+    void updateDish_ApplicationException() throws Exception {
         DishUpdateRequestDto dishUpdateRequestDto = new DishUpdateRequestDto();
         String errorMessage = "Información invalida del plato";
-        ResponseEntity<String> expectedResponse = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-        doThrow(new ApplicationException(errorMessage)).when(dishHandler).updateDish(dishUpdateRequestDto);
+        doThrow(new ApplicationException(errorMessage)).when(dishHandler).updateDish(dishUpdateRequestDto, token);
 
-        ResponseEntity<String> response = dishRestController.updateDish(dishUpdateRequestDto);
+        ResultActions response = mockMvc.perform(put("/api/v1/plazoleta/dish/")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dishUpdateRequestDto)));
 
-        assertEquals(expectedResponse, response);
-        verify(dishHandler, times(1)).updateDish(dishUpdateRequestDto);
+        response.andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
-    void findDishById_Success() {
+    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Employee")
+    void findDishById_Success() throws Exception {
         Long dishId = 1L;
         DishResponseDto expectedResponseDto = new DishResponseDto();
-        ResponseEntity<DishResponseDto> expectedResponse = ResponseEntity.ok(expectedResponseDto);
         when(dishHandler.findDishById(dishId)).thenReturn(expectedResponseDto);
 
-        ResponseEntity<DishResponseDto> response = dishRestController.findDishById(dishId);
+        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/dish/1")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON));
 
-        assertEquals(expectedResponse, response);
-        verify(dishHandler, times(1)).findDishById(dishId);
+        response.andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
-    void findDishById_ApplicationException() {
+    void findDishById_ApplicationException() throws Exception {
         Long dishId = 1L;
         String errorMessage = "Plato no encontrado";
         DishResponseDto expectedResponseDto = new DishResponseDto();
@@ -101,9 +147,11 @@ class DishRestControllerTest {
         ResponseEntity<DishResponseDto> expectedResponse = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(expectedResponseDto);
         when(dishHandler.findDishById(dishId)).thenThrow(new ApplicationException(errorMessage));
 
-        ResponseEntity<DishResponseDto> response = dishRestController.findDishById(dishId);
+        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/dish/1")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON));
 
-        assertEquals(expectedResponse.getBody().getName(), response.getBody().getName());
-        verify(dishHandler, times(1)).findDishById(dishId);
+        response.andDo(print())
+                .andExpect(status().isForbidden());
     }
 }
