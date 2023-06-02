@@ -1,5 +1,6 @@
 package com.pragma.plazoleta.application.handler.impl;
 
+import com.pragma.plazoleta.application.dto.request.DishEnableDisableRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
 import com.pragma.plazoleta.application.dto.request.RestaurantRequestDto;
@@ -40,6 +41,7 @@ public class DishHandler implements IDishHandler {
             validateOwnerRestaurant.validate(restaurantRequestDto, token);
             dishResponseDto.setRestaurantRequestDto(restaurantRequestDto);
             DishModel dishModel = this.dishResponseMapper.toDishModel(dishResponseDto);
+            dishModel.setActive(true);
             dishModel.validate();
             this.dishServicePort.saveDish(dishModel);
         } catch (Exception e) {
@@ -67,5 +69,20 @@ public class DishHandler implements IDishHandler {
     public DishResponseDto findDishById(Long dishId) {
         DishModel dishModel = this.dishServicePort.findDishById(dishId);
         return this.dishResponseMapper.toDishResDtoFromModel(dishModel);
+    }
+
+    @Override
+    public void enableDisableDish(DishEnableDisableRequestDto dishEnableDisableRequestDto, String token) {
+        try {
+            DishModel dishModel = dishServicePort.findDishById(dishEnableDisableRequestDto.getDishId());
+            RestaurantModel restaurantModel = restaurantServicePort.findRestaurantById(dishModel.getRestaurantModel().getId());
+            RestaurantRequestDto restaurantRequestDto = restaurantRequesMapper.toRestaurantDto(restaurantModel);
+            validateOwnerRestaurant.validate(restaurantRequestDto, token);
+            dishModel.setActive(!dishModel.isActive());
+            dishModel.validate();
+            this.dishServicePort.saveDish(dishModel);
+        } catch (Exception e) {
+            throw new ApplicationException(e.getMessage());
+        }
     }
 }

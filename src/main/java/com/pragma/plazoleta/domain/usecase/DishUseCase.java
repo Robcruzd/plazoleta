@@ -17,7 +17,6 @@ public class DishUseCase implements IDishServicePort {
     @Override
     public void saveDish(DishModel dishModel) {
         try {
-            dishModel.setActive(true);
             this.dishPersistencePort.saveDish(dishModel);
         } catch (DomainException e) {
             throw new DomainException(e.getMessage());

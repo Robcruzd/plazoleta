@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                 .authorizeRequests()
                     .antMatchers("/swagger-ui/**","/v3/**").permitAll()
                     .antMatchers("/api/v1/plazoleta/restaurant/").hasAnyAuthority("Administrador")
-                    .antMatchers("/api/v1/plazoleta/dish/").hasAnyAuthority("Propietario")
+                    .antMatchers("/api/v1/plazoleta/dish/", "/api/v1/plazoleta/dish/enabledisable").hasAnyAuthority("Propietario")
                     .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

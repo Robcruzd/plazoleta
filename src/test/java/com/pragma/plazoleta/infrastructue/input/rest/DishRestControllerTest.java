@@ -2,6 +2,7 @@ package com.pragma.plazoleta.infrastructue.input.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pragma.plazoleta.application.dto.request.DishEnableDisableRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
 import com.pragma.plazoleta.application.dto.response.DishResponseDto;
@@ -150,6 +151,37 @@ class DishRestControllerTest {
         ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/dish/1")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON));
+
+        response.andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Propietario")
+    void enableDisableDish_Success() throws Exception {
+        DishEnableDisableRequestDto dishEnableDisableRequestDto = new DishEnableDisableRequestDto(1L);
+        doNothing().when(dishHandler).enableDisableDish(dishEnableDisableRequestDto, token);
+
+        ResultActions response = mockMvc.perform(put("/api/v1/plazoleta/dish/")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dishEnableDisableRequestDto)));
+
+        response.andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Employee")
+    void enableDisableDish_ApplicationException() throws Exception {
+        DishEnableDisableRequestDto dishEnableDisableRequestDto = new DishEnableDisableRequestDto();
+        String errorMessage = "Información invalida del plato";
+        doThrow(new ApplicationException(errorMessage)).when(dishHandler).enableDisableDish(dishEnableDisableRequestDto, token);
+
+        ResultActions response = mockMvc.perform(put("/api/v1/plazoleta/dish/")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dishEnableDisableRequestDto)));
 
         response.andDo(print())
                 .andExpect(status().isForbidden());

@@ -1,5 +1,6 @@
 package com.pragma.plazoleta.infrastructue.input.rest;
 
+import com.pragma.plazoleta.application.dto.request.DishEnableDisableRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
 import com.pragma.plazoleta.application.dto.request.RestaurantRequestDto;
@@ -75,6 +76,22 @@ public class DishRestController {
             DishResponseDto dishResponseDto = new DishResponseDto();
             dishResponseDto.setName(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dishResponseDto);
+        }
+    }
+
+    @Operation(summary = "Habilitar/deshabilitar plato")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Plato modicado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Error en la solicitud", content = @Content)
+    })
+    @PutMapping("/enabledisable")
+    public ResponseEntity<String> enableDisableDish(@RequestHeader("Authorization") String token,
+                                             @RequestBody DishEnableDisableRequestDto dishEnableDisableRequestDto) {
+        try {
+            dishHandler.enableDisableDish(dishEnableDisableRequestDto, token);
+            return ResponseEntity.ok("Plato actualizado exitosamente");
+        } catch (ApplicationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }
