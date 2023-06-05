@@ -4,6 +4,7 @@ import com.pragma.plazoleta.application.dto.request.DishEnableDisableRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
 import com.pragma.plazoleta.application.dto.request.RestaurantRequestDto;
+import com.pragma.plazoleta.application.dto.response.DishListResponseDto;
 import com.pragma.plazoleta.application.dto.response.DishResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IDishHandler;
@@ -13,12 +14,14 @@ import com.pragma.plazoleta.application.mapper.IDishResponseMapper;
 import com.pragma.plazoleta.application.mapper.IRestaurantRequesMapper;
 import com.pragma.plazoleta.domain.api.IDishServicePort;
 import com.pragma.plazoleta.domain.api.IRestaurantServicePort;
+import com.pragma.plazoleta.domain.exception.DomainException;
 import com.pragma.plazoleta.domain.model.DishModel;
 import com.pragma.plazoleta.domain.model.RestaurantModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -85,4 +88,16 @@ public class DishHandler implements IDishHandler {
             throw new ApplicationException(e.getMessage());
         }
     }
+
+    @Override
+    public List<DishListResponseDto> listDishes(Long restaurantId, Long categoryId, int page, int size) {
+        try {
+            List<DishModel> dishesModel = dishServicePort.findDishesByRestaurantIdAndCategoryId(restaurantId, categoryId, page, size);
+            return dishResponseMapper.toDishListDto(dishesModel);
+        } catch (DomainException e) {
+            throw new ApplicationException(e.getMessage());
+        }
+    }
+
+
 }

@@ -4,7 +4,9 @@ import com.pragma.plazoleta.application.dto.request.DishEnableDisableRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
 import com.pragma.plazoleta.application.dto.request.RestaurantRequestDto;
+import com.pragma.plazoleta.application.dto.response.DishListResponseDto;
 import com.pragma.plazoleta.application.dto.response.DishResponseDto;
+import com.pragma.plazoleta.application.dto.response.RestaurantListResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IDishHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +23,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/plazoleta/dish")
@@ -92,6 +97,21 @@ public class DishRestController {
             return ResponseEntity.ok("Plato actualizado exitosamente");
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Listar platos por restaurante")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Platos encontrados", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Error en la solicitud", content = @Content)
+    })
+    @GetMapping("/list")
+    public ResponseEntity<List<DishListResponseDto>> findDishesLists(@RequestParam("restaurantId") Long restaurantId, @RequestParam("categoryId") Long categoryId,
+                                                                     @RequestParam("page") int page, @RequestParam("size") int size) {
+        try {
+            return new ResponseEntity<>(dishHandler.listDishes(restaurantId, categoryId, page, size), HttpStatus.OK);
+        } catch (ApplicationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 }

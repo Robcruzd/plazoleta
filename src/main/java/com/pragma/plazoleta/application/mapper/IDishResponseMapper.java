@@ -1,11 +1,14 @@
 package com.pragma.plazoleta.application.mapper;
 
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
+import com.pragma.plazoleta.application.dto.response.DishListResponseDto;
 import com.pragma.plazoleta.application.dto.response.DishResponseDto;
 import com.pragma.plazoleta.domain.model.DishModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -23,4 +26,6 @@ public interface IDishResponseMapper {
     @Mapping(source = "dishModel.categoryModel", target = "categoryRequestDto")
     @Mapping(source = "dishModel.restaurantModel", target = "restaurantRequestDto")
     DishResponseDto toDishResDtoFromModel(DishModel dishModel);
+
+    List<DishListResponseDto> toDishListDto(List<DishModel> dishModels);
 }

@@ -4,6 +4,7 @@ import com.pragma.plazoleta.application.dto.request.CategoryRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
 import com.pragma.plazoleta.application.dto.request.RestaurantRequestDto;
+import com.pragma.plazoleta.application.dto.response.DishListResponseDto;
 import com.pragma.plazoleta.application.dto.response.DishResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IValidateOwnerRestaurant;
@@ -22,11 +23,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
 
@@ -143,5 +148,56 @@ class DishHandlerTest {
         DishResponseDto dishResponseDtoReturn = dishHandler.findDishById(dishId);
 
         assertEquals(dishResponseDto, dishResponseDtoReturn);
+    }
+
+    @Test
+    void listDishes_Success() {
+        Long restaurantId = 1L;
+        Long categoryId = 2L;
+        int page = 1;
+        int size = 10;
+
+        List<DishListResponseDto> dishListResponseDtos= new ArrayList<>();
+        dishListResponseDtos.add(new DishListResponseDto("pasta", 1000, "descripción", "url", true));
+        dishListResponseDtos.add(new DishListResponseDto("pasta2", 1000, "descripción", "url", true));
+
+        List<DishModel> dishModels = new ArrayList<>();
+        dishModels.add(new DishModel(1L, "pasta", 1000, "plato de pasta", "https://pasta", null, null, true));
+        dishModels.add(new DishModel(2L, "pasta", 1000, "plato de pasta2", "https://pasta", null, null, true));
+
+        when(dishServicePort.findDishesByRestaurantIdAndCategoryId(restaurantId, categoryId, page, size))
+                .thenReturn(dishModels);
+        when(dishResponseMapper.toDishListDto(dishModels)).thenReturn(dishListResponseDtos);
+
+        List<DishListResponseDto> result = dishHandler.listDishes(restaurantId, categoryId, page, size);
+
+        assertEquals(dishListResponseDtos.size(), result.size());
+        assertEquals(dishListResponseDtos.get(0).getName(), result.get(0).getName());
+        assertEquals(dishListResponseDtos.get(0).getPrice(), result.get(0).getPrice());
+        assertEquals(dishListResponseDtos.get(0).getDescription(), result.get(0).getDescription());
+        assertEquals(dishListResponseDtos.get(1).getName(), result.get(1).getName());
+        assertEquals(dishListResponseDtos.get(1).getPrice(), result.get(1).getPrice());
+        assertEquals(dishListResponseDtos.get(1).getDescription(), result.get(1).getDescription());
+
+        verify(dishServicePort).findDishesByRestaurantIdAndCategoryId(restaurantId, categoryId, page, size);
+        verifyNoMoreInteractions(dishServicePort);
+    }
+
+    @Test
+    void listDishes_DomainException() {
+        Long restaurantId = 1L;
+        Long categoryId = 2L;
+        int page = 1;
+        int size = 10;
+
+        DomainException exception = new DomainException("Error solicitando platos");
+
+        when(dishServicePort.findDishesByRestaurantIdAndCategoryId(restaurantId, categoryId, page, size))
+                .thenThrow(exception);
+
+        assertThrows(ApplicationException.class, () -> dishHandler.listDishes(restaurantId, categoryId, page, size));
+
+        verify(dishServicePort).findDishesByRestaurantIdAndCategoryId(restaurantId, categoryId, page, size);
+        verifyNoMoreInteractions(dishServicePort);
     }
 }

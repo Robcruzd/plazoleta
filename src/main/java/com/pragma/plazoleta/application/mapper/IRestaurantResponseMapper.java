@@ -15,10 +15,4 @@ public interface IRestaurantResponseMapper {
 
     List<RestaurantListResponseDto> toRestaurantListDto(List<RestaurantModel> restaurantModel);
 
-//    List<RestaurantListResponseDto> toRestaurantListDto(List<RestaurantModel> restaurantModel);
-//
-//    default Page<RestaurantListResponseDto> toRestaurantListDtoPage(Page<RestaurantModel> restaurantModelPage) {
-//        List<RestaurantListResponseDto> restaurantListResponseDtoList = toRestaurantListDto(restaurantModelPage.getContent());
-//        return new PageImpl<>(restaurantListResponseDtoList, restaurantModelPage.getPageable(), restaurantModelPage.getTotalElements());
-//    }
 }

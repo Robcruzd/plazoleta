@@ -3,7 +3,10 @@ package com.pragma.plazoleta.application.handler;
 import com.pragma.plazoleta.application.dto.request.DishEnableDisableRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
+import com.pragma.plazoleta.application.dto.response.DishListResponseDto;
 import com.pragma.plazoleta.application.dto.response.DishResponseDto;
+
+import java.util.List;
 
 public interface IDishHandler {
 
@@ -14,4 +17,6 @@ public interface IDishHandler {
     DishResponseDto findDishById(Long dishId);
 
     void enableDisableDish(DishEnableDisableRequestDto dishEnableDisableRequestDto, String token);
+
+    List<DishListResponseDto> listDishes(Long restaurantId, Long categoryId, int page, int size);
 }

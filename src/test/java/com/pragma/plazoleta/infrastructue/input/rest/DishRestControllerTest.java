@@ -5,15 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pragma.plazoleta.application.dto.request.DishEnableDisableRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishRequestDto;
 import com.pragma.plazoleta.application.dto.request.DishUpdateRequestDto;
+import com.pragma.plazoleta.application.dto.response.DishListResponseDto;
 import com.pragma.plazoleta.application.dto.response.DishResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IDishHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,11 +24,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -185,5 +183,26 @@ class DishRestControllerTest {
 
         response.andDo(print())
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void findRestaurantLists_Success() throws Exception {
+        Long restaurantId = 1L;
+        Long categoryId = 2L;
+        int page = 1;
+        int size = 3;
+        List<DishListResponseDto> dishes = new ArrayList<>();
+        dishes.add(new DishListResponseDto("Dish 1", 10, "Description 1", "image1.jpg", true));
+        dishes.add(new DishListResponseDto("Dish 2", 15, "Description 2", "image2.jpg", true));
+        dishes.add(new DishListResponseDto("Dish 3", 12, "Description 3", "image3.jpg", true));
+
+
+        when(dishHandler.listDishes(restaurantId, categoryId, page, size)).thenReturn(dishes);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/dish/list?restaurantId=1&categoryId=2&page=1&size=2")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        response.andDo(print())
+                .andExpect(status().isOk());
     }
 }
