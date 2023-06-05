@@ -16,6 +16,9 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -90,5 +93,22 @@ class RestaurantUseCaseTest {
 
         Assertions.assertThrows(DomainException.class, () -> restaurantUseCase.findRestaurantById(restaurantId));
         verify(restaurantPersistencePort, times(1)).findRestaurantById(restaurantId);
+    }
+
+    @Test
+    void testFindAllRestaurants() {
+        int page = 1;
+        int size = 10;
+
+        List<RestaurantModel> expectedRestaurantModels = Arrays.asList(
+                new RestaurantModel(1L, "Restaurante1", 123456L, "calle 123", "09876543", "https://urlLogo", 1L),
+                new RestaurantModel(2L, "Restaurante2", 123456L, "calle 123", "09876543", "https://urlLogo", 1L)
+        );
+
+        when(restaurantPersistencePort.findAllRestaurants(page, size)).thenReturn(expectedRestaurantModels);
+
+        List<RestaurantModel> actualRestaurantModels = restaurantUseCase.findAllRestaurants(page, size);
+
+        assertEquals(expectedRestaurantModels, actualRestaurantModels);
     }
 }

@@ -3,8 +3,10 @@ package com.pragma.plazoleta.infrastructue.input.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pragma.plazoleta.application.dto.request.RestaurantRequestDto;
+import com.pragma.plazoleta.application.dto.response.RestaurantListResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IRestaurantHandler;
+import com.pragma.plazoleta.infrastructue.exception.RequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
@@ -114,5 +119,34 @@ class RestaurantRestControllerTest {
 
         response.andDo(print())
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void findRestaurantLists_Success() throws Exception {
+        int page = 1;
+        int size = 3;
+        List<RestaurantListResponseDto> restaurantListResponseDtos = new ArrayList<>();
+
+        when(restaurantHandler.listRestaurants(page, size)).thenReturn(restaurantListResponseDtos);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/list?page=1&size=3")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        response.andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findRestaurantLists_Failure() throws Exception {
+        int page = 1;
+        int size = 3;
+        ApplicationException exception = new ApplicationException("Restaurante no encontrado");
+        when(restaurantHandler.listRestaurants(page, size)).thenThrow(exception);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/list?page=1&size=3")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        response.andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }

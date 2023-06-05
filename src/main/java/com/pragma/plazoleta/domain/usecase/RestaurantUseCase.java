@@ -3,10 +3,14 @@ package com.pragma.plazoleta.domain.usecase;
 import com.pragma.plazoleta.application.dto.response.RoleUserDto;
 import com.pragma.plazoleta.domain.api.IRestaurantServicePort;
 import com.pragma.plazoleta.domain.exception.DomainException;
+import com.pragma.plazoleta.domain.model.DishModel;
 import com.pragma.plazoleta.domain.model.RestaurantModel;
 import com.pragma.plazoleta.domain.spi.IRestaurantPersistencePort;
 import com.pragma.plazoleta.infrastructue.exception.RequestException;
 import com.pragma.plazoleta.infrastructue.out.users.feign.IUsuariosClient;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public class RestaurantUseCase implements IRestaurantServicePort {
 
@@ -39,5 +43,10 @@ public class RestaurantUseCase implements IRestaurantServicePort {
         } catch (RequestException e) {
             throw new DomainException(e.getMessage());
         }
+    }
+
+    @Override
+    public List<RestaurantModel> findAllRestaurants(int page, int size) {
+        return restaurantPersistencePort.findAllRestaurants(page, size);
     }
 }

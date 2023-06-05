@@ -25,7 +25,7 @@ public class SecurityConfiguration {
         return http.csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
                 .authorizeRequests()
-                    .antMatchers("/swagger-ui/**","/v3/**").permitAll()
+                    .antMatchers("/swagger-ui/**", "/api/v1/plazoleta/restaurant/list**","/v3/**").permitAll()
                     .antMatchers("/api/v1/plazoleta/restaurant/").hasAnyAuthority("Administrador")
                     .antMatchers("/api/v1/plazoleta/dish/", "/api/v1/plazoleta/dish/enabledisable").hasAnyAuthority("Propietario")
                     .anyRequest().authenticated()
