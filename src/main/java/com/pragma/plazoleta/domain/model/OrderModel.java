@@ -1,26 +1,27 @@
 package com.pragma.plazoleta.domain.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class OrderModel {
 
     private Long id;
     private Long customerId;
-    private Date date;
-    private boolean status;
-    private Long chefId;
-    private RestaurantModel restaurant;
+    private LocalDate date;
+    private StatusOrderModel status;
+    private Long employeeId;
+    private Long restaurantId;
 
     public OrderModel() {
     }
 
-    public OrderModel(Long id, Long customerId, Date date, boolean status, Long chefId, RestaurantModel restaurant) {
+    public OrderModel(Long id, Long customerId, LocalDate date, StatusOrderModel status, Long employeeId, Long restaurantId) {
         this.id = id;
         this.customerId = customerId;
         this.date = date;
         this.status = status;
-        this.chefId = chefId;
-        this.restaurant = restaurant;
+        this.employeeId = employeeId;
+        this.restaurantId = restaurantId;
     }
 
     public Long getId() {
@@ -39,35 +40,35 @@ public class OrderModel {
         this.customerId = customerId;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public boolean isStatus() {
+    public StatusOrderModel getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(StatusOrderModel status) {
         this.status = status;
     }
 
-    public Long getChefId() {
-        return chefId;
+    public Long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setChefId(Long chefId) {
-        this.chefId = chefId;
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public RestaurantModel getRestaurant() {
-        return restaurant;
+    public Long getRestaurantId() {
+        return restaurantId;
     }
 
-    public void setRestaurant(RestaurantModel restaurant) {
-        this.restaurant = restaurant;
+    public void setRestaurantId(Long restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }
