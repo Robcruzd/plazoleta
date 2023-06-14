@@ -1,7 +1,10 @@
 package com.pragma.plazoleta.application.mapper;
 
 import com.pragma.plazoleta.application.dto.request.OrderDishesRequestDto;
+import com.pragma.plazoleta.application.dto.request.UpdateOrderRequestDto;
+import com.pragma.plazoleta.application.dto.response.OrderUpdateResponseDto;
 import com.pragma.plazoleta.domain.model.OrderDishesModel;
+import com.pragma.plazoleta.domain.model.OrderModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -14,4 +17,6 @@ import java.util.Set;
 public interface IOrderRequestMapper {
 
     List<OrderDishesModel> toModel(List<OrderDishesRequestDto> orderDishesRequestDto);
+
+    List<OrderModel> toOrderModel(List<OrderUpdateResponseDto> orderUpdateResponseDtoList);
 }

@@ -1,6 +1,8 @@
 package com.pragma.plazoleta.application.handler;
 
+import com.pragma.plazoleta.application.dto.request.RestaurantEmployeeRequestDto;
+
 public interface IValidateRestaurantEmployee {
 
-    Long validate(String token);
+    RestaurantEmployeeRequestDto validate(String token);
 }

@@ -1,6 +1,7 @@
 package com.pragma.plazoleta.infrastructue.input.rest;
 
 import com.pragma.plazoleta.application.dto.request.OrderRequestDto;
+import com.pragma.plazoleta.application.dto.request.UpdateOrderRequestDto;
 import com.pragma.plazoleta.application.dto.response.OrderResponseDto;
 import com.pragma.plazoleta.application.dto.response.RestaurantListResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +31,10 @@ public class OrderRestController {
 
     private final IOrderHandler orderHandler;
 
-    @Operation(summary = "Agregar pedido")
+    @Operation(summary = "Create order")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order user added successfuly", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Failed to add user", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Failed to add user", content = @Content),
             @ApiResponse(responseCode = "403", description = "User no authorized", content = @Content)
     })
     @PostMapping("/")
@@ -45,7 +47,7 @@ public class OrderRestController {
         }
     }
 
-    @Operation(summary = "Listar Pedidos")
+    @Operation(summary = "List orders")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedidos encontrados", content = @Content),
             @ApiResponse(responseCode = "400", description = "Error en la solicitud", content = @Content),
@@ -58,6 +60,22 @@ public class OrderRestController {
             return new ResponseEntity<>(orderHandler.listOrders(token, status, page, size), HttpStatus.OK);
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @Operation(summary = "Update order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order updated successfuly", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Failed to update order", content = @Content),
+            @ApiResponse(responseCode = "403", description = "User not authorized", content = @Content)
+    })
+    @PutMapping("/")
+    public ResponseEntity<String> updateOrders(@RequestHeader("Authorization") String token, @RequestBody List<UpdateOrderRequestDto> updateOrderRequestDto) {
+        try {
+            orderHandler.updateOrders(updateOrderRequestDto, token);
+            return ResponseEntity.ok("Order updated succesfully");
+        } catch (ApplicationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }

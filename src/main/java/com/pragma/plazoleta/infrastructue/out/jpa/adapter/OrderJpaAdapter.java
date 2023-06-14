@@ -17,7 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class OrderJpaAdapter implements IOrderPersistencePort {
@@ -44,6 +46,23 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
             return orderEntityMapper.toModelList(orderEntities);
         } catch (RequestException e) {
             throw new RequestException(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public void updateOrder(Long userId, List<OrderModel> orderModelList, int statusId) {
+        try {
+            StatusOrderEntity statusOrderEntity = statusOrderRepository.findById(statusId).orElseThrow(
+                    ()->new RequestException("Status not found", HttpStatus.NOT_FOUND)
+            );
+            List<OrderEntity> orderEntityList = orderEntityMapper.toEntityList(orderModelList);
+            orderEntityList.forEach(orderEntity -> {
+                orderEntity.setEmployeeId(userId);
+                orderEntity.setStatus(statusOrderEntity);
+            });
+            orderRepository.saveAll(new ArrayList<>(orderEntityList));
+        } catch (RequestException e) {
+            throw new RequestException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.pragma.plazoleta.infrastructue.out.jpa.adapter;
 
+import com.pragma.plazoleta.domain.model.OrderModel;
 import com.pragma.plazoleta.infrastructue.exception.RequestException;
 import com.pragma.plazoleta.infrastructue.out.jpa.entity.OrderEntity;
 import com.pragma.plazoleta.infrastructue.out.jpa.entity.StatusOrderEntity;
+import com.pragma.plazoleta.infrastructue.out.jpa.mapper.IOrderEntityMapper;
 import com.pragma.plazoleta.infrastructue.out.jpa.repository.IOrderRepository;
 import com.pragma.plazoleta.infrastructue.out.jpa.repository.IStatusOrderRepository;
 import org.junit.jupiter.api.Test;
@@ -10,8 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +34,8 @@ class OrderJpaAdapterTest {
 
     @Mock
     private IStatusOrderRepository statusOrderRepository;
+    @Mock
+    private IOrderEntityMapper orderEntityMapper;
 
     @InjectMocks
     private OrderJpaAdapter orderJpaAdapter;
@@ -69,4 +76,29 @@ class OrderJpaAdapterTest {
         verify(statusOrderRepository, times(1)).findById(statusOrderId);
         verify(orderRepository, never()).save(any(OrderEntity.class));
     }
+
+    @Test
+    public void testUpdateOrder() {
+        // Mock de los datos de entrada
+        Long userId = 1L;
+        List<OrderModel> orderModelList = new ArrayList<>();
+        int statusId = 1;
+
+        // Mock del repository de statusOrder
+        StatusOrderEntity statusOrderEntity = new StatusOrderEntity();
+        when(statusOrderRepository.findById(statusId)).thenReturn(Optional.of(statusOrderEntity));
+
+        // Mock del mapper de orderEntity
+        List<OrderEntity> orderEntityList = new ArrayList<>();
+        when(orderEntityMapper.toEntityList(orderModelList)).thenReturn(orderEntityList);
+
+        // Llamada al método que se va a probar
+        orderJpaAdapter.updateOrder(userId, orderModelList, statusId);
+
+        // Verificaciones
+        verify(orderRepository, times(1)).saveAll(orderEntityList);
+    }
+
+
+
 }

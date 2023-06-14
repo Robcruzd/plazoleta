@@ -1,16 +1,23 @@
 package com.pragma.plazoleta.application.handler.impl;
 
 import com.pragma.plazoleta.application.dto.request.OrderRequestDto;
+import com.pragma.plazoleta.application.dto.request.RestaurantEmployeeRequestDto;
+import com.pragma.plazoleta.application.dto.request.UpdateOrderRequestDto;
 import com.pragma.plazoleta.application.dto.response.OrderDishesResponseDto;
 import com.pragma.plazoleta.application.dto.response.OrderResponseDto;
+import com.pragma.plazoleta.application.dto.response.OrderUpdateResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IOrderDishesHandler;
 import com.pragma.plazoleta.application.handler.IValidateCustomerOrderActive;
+import com.pragma.plazoleta.application.handler.IValidateOrderWithRestaurant;
 import com.pragma.plazoleta.application.handler.IValidateRestaurantEmployee;
+import com.pragma.plazoleta.application.mapper.IOrderRequestMapper;
 import com.pragma.plazoleta.application.mapper.IOrderResponseMapper;
+import com.pragma.plazoleta.application.mapper.IRestaurantEmployeeRequestMapper;
 import com.pragma.plazoleta.domain.api.IOrderServicePort;
 import com.pragma.plazoleta.domain.exception.DomainException;
 import com.pragma.plazoleta.domain.model.OrderModel;
+import com.pragma.plazoleta.domain.model.RestaurantEmployeeModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +30,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +48,15 @@ class OrderHandlerTest {
     private IValidateRestaurantEmployee validateRestaurantEmployee;
     @Mock
     private IOrderResponseMapper orderResponseMapper;
+
+    @Mock
+    private IOrderRequestMapper orderRequestMapper;
+
+    @Mock
+    private IRestaurantEmployeeRequestMapper restaurantEmployeeRequestMapper;
+
+    @Mock
+    private IValidateOrderWithRestaurant validateOrderWithRestaurant;
 
 
     @InjectMocks
@@ -85,7 +102,7 @@ class OrderHandlerTest {
         orderDishesResponseDto.setDishId(1L);
         orderDishesResponseDtoList.add(orderDishesResponseDto);
 
-        when(validateRestaurantEmployee.validate(token)).thenReturn(restaurantId);
+//        when(validateRestaurantEmployee.validate(token)).thenReturn(restaurantId);
         when(orderServicePort.listOrders(restaurantId, status, page, size)).thenReturn(orderModelList);
         when(orderResponseMapper.toOrderDto(orderModelList)).thenReturn(orderResponseDtoList);
         when(orderDishesHandler.findOrderDishesByOrderId(orderResponseDto.getId())).thenReturn(orderDishesResponseDtoList);
@@ -112,5 +129,45 @@ class OrderHandlerTest {
         when(validateRestaurantEmployee.validate(token)).thenThrow(new DomainException("Domain exception message"));
 
         assertThrows(ApplicationException.class, () -> orderHandler.listOrders(token, status, page, size));
+    }
+
+    @Test
+    public void testUpdateOrders_WithValidData_CallsOrderServicePort() {
+        String token = "token";
+
+        RestaurantEmployeeRequestDto restaurantEmployeeRequestDto = new RestaurantEmployeeRequestDto();
+
+        RestaurantEmployeeModel restaurantEmployeeModel = new RestaurantEmployeeModel();
+
+        List<UpdateOrderRequestDto> updateOrderRequestDtoList = new ArrayList<>();
+
+        List<OrderUpdateResponseDto> orderUpdateResponseDtoList = new ArrayList<>();
+
+        List<OrderModel> orderModelList = new ArrayList<>();
+
+        when(validateRestaurantEmployee.validate(token)).thenReturn(restaurantEmployeeRequestDto);
+        when(restaurantEmployeeRequestMapper.toModel(restaurantEmployeeRequestDto)).thenReturn(restaurantEmployeeModel);
+        when(validateOrderWithRestaurant.validate(updateOrderRequestDtoList, restaurantEmployeeModel.getRestaurantId())).thenReturn(orderUpdateResponseDtoList);
+        when(orderRequestMapper.toOrderModel(orderUpdateResponseDtoList)).thenReturn(orderModelList);
+
+        assertDoesNotThrow(() -> orderHandler.updateOrders(updateOrderRequestDtoList, token));
+
+        verify(validateRestaurantEmployee, times(1)).validate(token);
+        verify(restaurantEmployeeRequestMapper, times(1)).toModel(restaurantEmployeeRequestDto);
+        verify(validateOrderWithRestaurant, times(1)).validate(updateOrderRequestDtoList, restaurantEmployeeModel.getRestaurantId());
+        verify(orderRequestMapper, times(1)).toOrderModel(orderUpdateResponseDtoList);
+        verify(orderServicePort, times(1)).updateOrders(restaurantEmployeeModel.getUserId(), orderModelList);
+    }
+
+    @Test
+    public void testUpdateOrders_WithException_ThrowsApplicationException() {
+        String token = "token";
+
+        when(validateRestaurantEmployee.validate(token)).thenThrow(new DomainException("Validation failed"));
+
+        assertThrows(ApplicationException.class, () -> orderHandler.updateOrders(new ArrayList<>(), token));
+
+        verify(validateRestaurantEmployee, times(1)).validate(token);
+        verifyNoMoreInteractions(restaurantEmployeeRequestMapper, validateOrderWithRestaurant, orderRequestMapper, orderServicePort);
     }
 }

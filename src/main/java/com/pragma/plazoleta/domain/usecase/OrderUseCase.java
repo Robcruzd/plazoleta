@@ -2,6 +2,7 @@ package com.pragma.plazoleta.domain.usecase;
 
 import com.pragma.plazoleta.domain.api.IOrderServicePort;
 import com.pragma.plazoleta.domain.model.OrderModel;
+import com.pragma.plazoleta.domain.model.RestaurantEmployeeModel;
 import com.pragma.plazoleta.domain.spi.IOrderPersistencePort;
 
 import java.util.List;
@@ -22,5 +23,11 @@ public class OrderUseCase implements IOrderServicePort {
     @Override
     public List<OrderModel> listOrders(Long restaurantId, int status, int page, int size) {
         return orderPersistencePort.listOrders(restaurantId, status, page, size);
+    }
+
+    @Override
+    public void updateOrders(Long userId, List<OrderModel> orderModelList) {
+        int statusId = 2;
+        orderPersistencePort.updateOrder(userId, orderModelList, statusId);
     }
 }

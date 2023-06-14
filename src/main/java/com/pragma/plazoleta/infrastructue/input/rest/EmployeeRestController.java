@@ -3,6 +3,10 @@ package com.pragma.plazoleta.infrastructue.input.rest;
 import com.pragma.plazoleta.application.dto.request.RestaurantEmployeeFullRequestDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.impl.RestaurantEmployeeHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,11 @@ public class EmployeeRestController {
 
     private final RestaurantEmployeeHandler restaurantEmployeeHandler;
 
+    @Operation(summary = "Create restaurant employee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Restaurant employee created", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Error in the request", content = @Content)
+    })
     @PostMapping("/restaurant_employee")
     public ResponseEntity<String> saveUserEmployee(@RequestHeader("Authorization") String token,
                                  @RequestBody RestaurantEmployeeFullRequestDto restaurantEmployeeFullRequestDto) {

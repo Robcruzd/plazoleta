@@ -1,5 +1,6 @@
 package com.pragma.plazoleta.infrastructue.out.jpa.mapper;
 
+import com.pragma.plazoleta.application.dto.request.RestaurantEmployeeRequestDto;
 import com.pragma.plazoleta.domain.model.RestaurantEmployeeModel;
 import com.pragma.plazoleta.infrastructue.out.jpa.entity.RestaurantEmployeeEntity;
 import org.mapstruct.Mapper;
@@ -13,4 +14,7 @@ public interface IRestaurantEmployeeMapper {
 
     @Mapping(source = "restaurantEmployeeModel.userId", target = "employeeId")
     RestaurantEmployeeEntity toEntity(RestaurantEmployeeModel restaurantEmployeeModel);
+
+    @Mapping(source = "restaurantEmployeeEntity.employeeId", target = "userId")
+    RestaurantEmployeeRequestDto toDto(RestaurantEmployeeEntity restaurantEmployeeEntity);
 }
