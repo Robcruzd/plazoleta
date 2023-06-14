@@ -22,4 +22,10 @@ public class OrderDishesJpaAdapter implements IOrderDishesPersistencePort {
         }
         orderDishesRepository.saveAll(orderDishesEntityList);
     }
+
+    @Override
+    public List<OrderDishesModel> findOrderDishesByOrderId(Long orderId) {
+        List<OrderDishesEntity> orderDishesEntityList = orderDishesRepository.findAllByOrderId(orderId);
+        return orderDishesEntityMapper.toModelList(orderDishesEntityList);
+    }
 }

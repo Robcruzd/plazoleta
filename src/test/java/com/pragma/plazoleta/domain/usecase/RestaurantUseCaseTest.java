@@ -4,8 +4,9 @@ import com.pragma.plazoleta.application.dto.response.RoleUserDto;
 import com.pragma.plazoleta.domain.exception.DomainException;
 import com.pragma.plazoleta.domain.model.RestaurantModel;
 import com.pragma.plazoleta.domain.spi.IRestaurantPersistencePort;
+import com.pragma.plazoleta.domain.spi.IUsersFeignPersistencePort;
 import com.pragma.plazoleta.infrastructue.exception.RequestException;
-import com.pragma.plazoleta.infrastructue.out.users.feign.IUsuariosClient;
+import com.pragma.plazoleta.infrastructue.out.feign.users.client.IUsersClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class RestaurantUseCaseTest {
     private IRestaurantPersistencePort restaurantPersistencePort;
 
     @Mock
-    private IUsuariosClient usuariosClient;
+    private IUsersFeignPersistencePort usuariosClient;
 
     @InjectMocks
     private RestaurantUseCase restaurantUseCase;

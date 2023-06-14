@@ -3,30 +3,29 @@ package com.pragma.plazoleta.domain.usecase;
 import com.pragma.plazoleta.application.dto.response.RoleUserDto;
 import com.pragma.plazoleta.domain.api.IRestaurantServicePort;
 import com.pragma.plazoleta.domain.exception.DomainException;
-import com.pragma.plazoleta.domain.model.DishModel;
 import com.pragma.plazoleta.domain.model.RestaurantModel;
 import com.pragma.plazoleta.domain.spi.IRestaurantPersistencePort;
+import com.pragma.plazoleta.domain.spi.IUsersFeignPersistencePort;
 import com.pragma.plazoleta.infrastructue.exception.RequestException;
-import com.pragma.plazoleta.infrastructue.out.users.feign.IUsuariosClient;
-import org.springframework.data.domain.Page;
+import com.pragma.plazoleta.infrastructue.out.feign.users.client.IUsersClient;
 
 import java.util.List;
 
 public class RestaurantUseCase implements IRestaurantServicePort {
 
     private final IRestaurantPersistencePort restaurantPersistencePort;
-    private final IUsuariosClient usuariosClient;
+    private final IUsersFeignPersistencePort usersFeignPersistencePort;
 
-    public RestaurantUseCase(IRestaurantPersistencePort restaurantPersistencePort, IUsuariosClient usuariosClient) {
+    public RestaurantUseCase(IRestaurantPersistencePort restaurantPersistencePort, IUsersFeignPersistencePort usersFeignPersistencePort) {
         this.restaurantPersistencePort = restaurantPersistencePort;
-        this.usuariosClient = usuariosClient;
+        this.usersFeignPersistencePort = usersFeignPersistencePort;
     }
 
     @Override
     public void saveRestaurant(RestaurantModel restaurantModel) throws DomainException {
         try {
             restaurantModel.validate();
-            RoleUserDto owner = usuariosClient.getUserById(restaurantModel.getOwnerId());
+            RoleUserDto owner = usersFeignPersistencePort.getUserById(restaurantModel.getOwnerId());
             if (owner.getId() != 1)
                 throw new DomainException("El id del usuario ingresado no tiene el rol para realizar esta acción");
             restaurantModel.setOwnerId(owner.getId());

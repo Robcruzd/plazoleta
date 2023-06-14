@@ -8,10 +8,12 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "restaurant_employee")
+@IdClass(RestaurantEmployeeEntityId.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -22,6 +24,7 @@ public class RestaurantEmployeeEntity {
     @Column(name = "employee_id")
     private Long employeeId;
 
+    @Id
     @Column(name = "restaurant_id")
     private Long restaurantId;
 }

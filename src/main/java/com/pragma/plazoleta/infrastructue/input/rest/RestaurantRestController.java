@@ -76,7 +76,6 @@ public class RestaurantRestController {
         try {
             return new ResponseEntity<>(restaurantHandler.listRestaurants(page, size), HttpStatus.OK);
         } catch (ApplicationException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

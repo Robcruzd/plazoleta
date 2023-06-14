@@ -14,4 +14,6 @@ import java.util.List;
 public interface IOrderDishesEntityMapper {
 
     List<OrderDishesEntity> toEntityList(List<OrderDishesModel> orderDishesModelList);
+
+    List<OrderDishesModel> toModelList(List<OrderDishesEntity> orderDishesEntityList);
 }

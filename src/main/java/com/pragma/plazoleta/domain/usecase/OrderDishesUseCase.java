@@ -18,4 +18,9 @@ public class OrderDishesUseCase implements IOrderDishesServicePort {
     public void saveOrderDishes(List<OrderDishesModel> orderDishesModel, Long orderId) {
         orderDishesPersistencePort.saveOrderDishes(orderDishesModel, orderId);
     }
+
+    @Override
+    public List<OrderDishesModel> findOrderDishesByOrderId(Long orderId) {
+        return orderDishesPersistencePort.findOrderDishesByOrderId(orderId);
+    }
 }

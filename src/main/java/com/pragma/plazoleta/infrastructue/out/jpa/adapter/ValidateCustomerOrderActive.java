@@ -24,7 +24,7 @@ public class ValidateCustomerOrderActive implements IValidateCustomerOrderActive
         if(orderEntity == null || orderEntity.getStatus().getId() == 4)
             return customerId;
         else
-            throw new RequestException("El usuario no puede solicitar más pedidos, tiene un pedido " +
-                    "con estado: "+orderEntity.getStatus().getName(), HttpStatus.BAD_REQUEST);
+            throw new RequestException("The user can't request more orders, He has an order " +
+                    "with status: "+orderEntity.getStatus().getName(), HttpStatus.BAD_REQUEST);
     }
 }

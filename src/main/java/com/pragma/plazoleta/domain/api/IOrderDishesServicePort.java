@@ -7,4 +7,6 @@ import java.util.List;
 public interface IOrderDishesServicePort {
 
     void saveOrderDishes(List<OrderDishesModel> orderDishesModel, Long orderId);
+
+    List<OrderDishesModel> findOrderDishesByOrderId(Long orderId);
 }

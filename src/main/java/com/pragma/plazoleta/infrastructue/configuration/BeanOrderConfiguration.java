@@ -17,9 +17,10 @@ public class BeanOrderConfiguration {
 
     private final IOrderRepository orderRepository;
     private final IStatusOrderRepository statusOrderRepository;
+    private final IOrderEntityMapper orderEntityMapper;
     @Bean
     public IOrderPersistencePort orderPersistencePort(){
-        return new OrderJpaAdapter(orderRepository, statusOrderRepository);
+        return new OrderJpaAdapter(orderRepository, statusOrderRepository, orderEntityMapper);
     }
     @Bean
     public IOrderServicePort orderServicePort() {
