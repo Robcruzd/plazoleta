@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "users-service", url = "localhost:8081/api/v1")
 public interface IUsersClient {
     @GetMapping("/users/role/{userId}")
-    RoleUserDto getUserById(@PathVariable Long userId);
+    RoleUserDto getRoleUserById(@PathVariable Long userId);
+
+    @GetMapping("/users/{userId}")
+    UserRequestDto getUserById(@RequestHeader("Authorization") String token, @PathVariable Long userId);
 
     @PostMapping("/users/employee")
     ResponseEntity<Long> saveUserEmployee(@RequestHeader("Authorization") String token,

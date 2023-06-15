@@ -78,4 +78,20 @@ public class OrderRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "Update order ready")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order updated successfuly", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Failed to update order", content = @Content),
+            @ApiResponse(responseCode = "403", description = "User not authorized", content = @Content)
+    })
+    @PutMapping("/ready")
+    public ResponseEntity<String> updateOrderReady(@RequestHeader("Authorization") String token, @RequestBody UpdateOrderRequestDto updateOrderRequestDto) {
+        try {
+            orderHandler.updateOrderReady(updateOrderRequestDto, token);
+            return ResponseEntity.ok("Order updated succesfully");
+        } catch (ApplicationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

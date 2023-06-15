@@ -13,4 +13,6 @@ public interface IOrderServicePort {
     List<OrderModel> listOrders(Long restaurantId, int status, int page, int size);
 
     void updateOrders(Long userId, List<OrderModel> orderModelList);
+
+    void updateOrderReady(OrderModel orderModel, String token);
 }

@@ -25,7 +25,7 @@ public class RestaurantUseCase implements IRestaurantServicePort {
     public void saveRestaurant(RestaurantModel restaurantModel) throws DomainException {
         try {
             restaurantModel.validate();
-            RoleUserDto owner = usersFeignPersistencePort.getUserById(restaurantModel.getOwnerId());
+            RoleUserDto owner = usersFeignPersistencePort.getRoleUserById(restaurantModel.getOwnerId());
             if (owner.getId() != 1)
                 throw new DomainException("El id del usuario ingresado no tiene el rol para realizar esta acción");
             restaurantModel.setOwnerId(owner.getId());

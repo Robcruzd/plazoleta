@@ -18,5 +18,7 @@ public interface IOrderRequestMapper {
 
     List<OrderDishesModel> toModel(List<OrderDishesRequestDto> orderDishesRequestDto);
 
-    List<OrderModel> toOrderModel(List<OrderUpdateResponseDto> orderUpdateResponseDtoList);
+    List<OrderModel> toOrderModelList(List<OrderUpdateResponseDto> orderUpdateResponseDtoList);
+
+    OrderModel toOrderModel(UpdateOrderRequestDto updateOrderRequestDto);
 }

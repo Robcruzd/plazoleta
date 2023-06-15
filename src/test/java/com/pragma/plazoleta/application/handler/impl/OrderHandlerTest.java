@@ -148,14 +148,14 @@ class OrderHandlerTest {
         when(validateRestaurantEmployee.validate(token)).thenReturn(restaurantEmployeeRequestDto);
         when(restaurantEmployeeRequestMapper.toModel(restaurantEmployeeRequestDto)).thenReturn(restaurantEmployeeModel);
         when(validateOrderWithRestaurant.validate(updateOrderRequestDtoList, restaurantEmployeeModel.getRestaurantId())).thenReturn(orderUpdateResponseDtoList);
-        when(orderRequestMapper.toOrderModel(orderUpdateResponseDtoList)).thenReturn(orderModelList);
+        when(orderRequestMapper.toOrderModelList(orderUpdateResponseDtoList)).thenReturn(orderModelList);
 
         assertDoesNotThrow(() -> orderHandler.updateOrders(updateOrderRequestDtoList, token));
 
         verify(validateRestaurantEmployee, times(1)).validate(token);
         verify(restaurantEmployeeRequestMapper, times(1)).toModel(restaurantEmployeeRequestDto);
         verify(validateOrderWithRestaurant, times(1)).validate(updateOrderRequestDtoList, restaurantEmployeeModel.getRestaurantId());
-        verify(orderRequestMapper, times(1)).toOrderModel(orderUpdateResponseDtoList);
+        verify(orderRequestMapper, times(1)).toOrderModelList(orderUpdateResponseDtoList);
         verify(orderServicePort, times(1)).updateOrders(restaurantEmployeeModel.getUserId(), orderModelList);
     }
 

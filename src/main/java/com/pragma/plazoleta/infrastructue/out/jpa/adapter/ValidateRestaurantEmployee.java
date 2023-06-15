@@ -28,4 +28,6 @@ public class ValidateRestaurantEmployee implements IValidateRestaurantEmployee {
         } else
             throw new RequestException("The employee doesn't exist", HttpStatus.BAD_REQUEST);
     }
+
+
 }

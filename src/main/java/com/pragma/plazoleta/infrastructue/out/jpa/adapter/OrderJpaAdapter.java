@@ -33,7 +33,7 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
         StatusOrderEntity statusOrderEntity = statusOrderRepository.findById(statusOrderId).orElseThrow(
                 ()->new RequestException("Estado no encontrado", HttpStatus.NOT_FOUND)
         );
-        OrderEntity orderEntity = new OrderEntity(null, customerId, LocalDate.now(), statusOrderEntity, null, restaurantId);
+        OrderEntity orderEntity = new OrderEntity(null, customerId, LocalDate.now(), statusOrderEntity, null, restaurantId, null);
         return orderRepository.save(orderEntity).getId();
     }
 
@@ -64,5 +64,11 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
         } catch (RequestException e) {
             throw new RequestException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public void updateOrderReady(OrderModel orderModel) {
+        OrderEntity orderEntity = orderEntityMapper.toEntity(orderModel);
+        orderRepository.save(orderEntity);
     }
 }

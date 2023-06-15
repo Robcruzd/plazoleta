@@ -21,5 +21,6 @@ public class OrderResponseDto {
     private StatusOrderModel status;
     private Long employeeId;
     private Long restaurantId;
+    private String securityPin;
     private List<OrderDishesResponseDto> orderDishesResponseDtoList;
 }

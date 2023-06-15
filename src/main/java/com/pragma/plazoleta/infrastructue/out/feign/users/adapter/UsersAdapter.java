@@ -17,8 +17,13 @@ public class UsersAdapter implements IUsersFeignPersistencePort {
 
     private final IUsersClient usersClient;
     @Override
-    public RoleUserDto getUserById(Long userId) {
-        return usersClient.getUserById(userId);
+    public RoleUserDto getRoleUserById(Long userId) {
+        return usersClient.getRoleUserById(userId);
+    }
+
+    @Override
+    public UserRequestDto getUserById(Long userId, String token) {
+        return usersClient.getUserById(token, userId);
     }
 
     @Override

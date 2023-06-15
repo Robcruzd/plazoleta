@@ -21,4 +21,6 @@ public interface IOrderEntityMapper {
     List<OrderUpdateResponseDto> toResponseDto(List<OrderEntity> orderEntityList);
 
     List<OrderEntity> toEntityList(List<OrderModel> orderModelList);
+
+    OrderModel toModel(OrderEntity orderEntity);
 }

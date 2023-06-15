@@ -12,4 +12,6 @@ public interface IOrderPersistencePort {
     List<OrderModel> listOrders(Long restaurantId, int status, int page, int size);
 
     void updateOrder(Long userId, List<OrderModel> orderModelList, int statusId);
+
+    void updateOrderReady(OrderModel orderModel);
 }

@@ -13,4 +13,6 @@ public interface IOrderHandler {
     List<OrderResponseDto> listOrders(String token, int status, int page, int size);
 
     void updateOrders(List<UpdateOrderRequestDto> updateOrderRequestDtoList, String token);
+
+    void updateOrderReady(UpdateOrderRequestDto updateOrderRequestDto, String token);
 }

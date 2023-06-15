@@ -1,7 +1,10 @@
 package com.pragma.plazoleta.infrastructue.configuration;
 
 import com.pragma.plazoleta.domain.api.IOrderServicePort;
+import com.pragma.plazoleta.domain.spi.IMessagingFeignPersistencePort;
 import com.pragma.plazoleta.domain.spi.IOrderPersistencePort;
+import com.pragma.plazoleta.domain.spi.IStatusOrderPersistencePort;
+import com.pragma.plazoleta.domain.spi.IUsersFeignPersistencePort;
 import com.pragma.plazoleta.domain.usecase.OrderUseCase;
 import com.pragma.plazoleta.infrastructue.out.jpa.adapter.OrderJpaAdapter;
 import com.pragma.plazoleta.infrastructue.out.jpa.mapper.IOrderEntityMapper;
@@ -18,12 +21,15 @@ public class BeanOrderConfiguration {
     private final IOrderRepository orderRepository;
     private final IStatusOrderRepository statusOrderRepository;
     private final IOrderEntityMapper orderEntityMapper;
+    private final IStatusOrderPersistencePort statusOrderPersistencePort;
+    private final IUsersFeignPersistencePort usersFeignPersistencePort;
+    private final IMessagingFeignPersistencePort messagingFeignPersistencePort;
     @Bean
     public IOrderPersistencePort orderPersistencePort(){
         return new OrderJpaAdapter(orderRepository, statusOrderRepository, orderEntityMapper);
     }
     @Bean
     public IOrderServicePort orderServicePort() {
-        return new OrderUseCase(orderPersistencePort());
+        return new OrderUseCase(orderPersistencePort(), statusOrderPersistencePort, messagingFeignPersistencePort, usersFeignPersistencePort);
     }
 }

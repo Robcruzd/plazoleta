@@ -10,6 +10,7 @@ import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IOrderDishesHandler;
 import com.pragma.plazoleta.application.handler.IOrderHandler;
 import com.pragma.plazoleta.application.handler.IValidateCustomerOrderActive;
+import com.pragma.plazoleta.application.handler.IValidateOrderWithEmployee;
 import com.pragma.plazoleta.application.handler.IValidateOrderWithRestaurant;
 import com.pragma.plazoleta.application.handler.IValidateRestaurantEmployee;
 import com.pragma.plazoleta.application.mapper.IOrderRequestMapper;
@@ -20,12 +21,11 @@ import com.pragma.plazoleta.domain.exception.DomainException;
 import com.pragma.plazoleta.domain.model.OrderModel;
 import com.pragma.plazoleta.domain.model.RestaurantEmployeeModel;
 import com.pragma.plazoleta.infrastructue.exception.RequestException;
-import com.pragma.plazoleta.infrastructue.out.jpa.entity.RestaurantEmployeeEntity;
+import com.pragma.plazoleta.infrastructue.security.jwt.IExtractAndValidateToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,6 +41,7 @@ public class OrderHandler implements IOrderHandler {
     private final IOrderRequestMapper orderRequestMapper;
     private final IRestaurantEmployeeRequestMapper restaurantEmployeeRequestMapper;
     private final IValidateOrderWithRestaurant validateOrderWithRestaurant;
+    private final IValidateOrderWithEmployee validateOrderWithEmployee;
     @Override
     public void saveOrder(OrderRequestDto orderRequestDto, String token) {
         try {
@@ -75,8 +76,18 @@ public class OrderHandler implements IOrderHandler {
             RestaurantEmployeeRequestDto restaurantEmployeeRequestDto = validateRestaurantEmployee.validate(token);
             RestaurantEmployeeModel restaurantEmployeeModel = restaurantEmployeeRequestMapper.toModel(restaurantEmployeeRequestDto);
             List<OrderUpdateResponseDto> orderUpdateResponseDtoList = validateOrderWithRestaurant.validate(updateOrderRequestDtoList, restaurantEmployeeModel.getRestaurantId());
-            List<OrderModel> orderModelList = orderRequestMapper.toOrderModel(orderUpdateResponseDtoList);
+            List<OrderModel> orderModelList = orderRequestMapper.toOrderModelList(orderUpdateResponseDtoList);
             orderServicePort.updateOrders(restaurantEmployeeModel.getUserId(), orderModelList);
+        } catch (DomainException | RequestException e) {
+            throw new ApplicationException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateOrderReady(UpdateOrderRequestDto updateOrderRequestDto, String token) {
+        try {
+            OrderModel orderModel = validateOrderWithEmployee.validate(token, updateOrderRequestDto.getId());
+            orderServicePort.updateOrderReady(orderModel, token);
         } catch (DomainException | RequestException e) {
             throw new ApplicationException(e.getMessage());
         }

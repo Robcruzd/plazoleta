@@ -11,17 +11,19 @@ public class OrderModel {
     private StatusOrderModel status;
     private Long employeeId;
     private Long restaurantId;
+    private String securityPin;
 
     public OrderModel() {
     }
 
-    public OrderModel(Long id, Long customerId, LocalDate date, StatusOrderModel status, Long employeeId, Long restaurantId) {
+    public OrderModel(Long id, Long customerId, LocalDate date, StatusOrderModel status, Long employeeId, Long restaurantId, String securityPin) {
         this.id = id;
         this.customerId = customerId;
         this.date = date;
         this.status = status;
         this.employeeId = employeeId;
         this.restaurantId = restaurantId;
+        this.securityPin = securityPin;
     }
 
     public Long getId() {
@@ -70,5 +72,13 @@ public class OrderModel {
 
     public void setRestaurantId(Long restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public String getSecurityPin() {
+        return securityPin;
+    }
+
+    public void setSecurityPin(String securityPin) {
+        this.securityPin = securityPin;
     }
 }

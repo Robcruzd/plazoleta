@@ -51,7 +51,7 @@ class RestaurantUseCaseTest {
 
         RoleUserDto owner = new RoleUserDto(1L, "Propietario");
 
-        when(usuariosClient.getUserById(restaurantModel.getOwnerId())).thenReturn(owner);
+        when(usuariosClient.getRoleUserById(restaurantModel.getOwnerId())).thenReturn(owner);
 
         restaurantUseCase.saveRestaurant(restaurantModel);
 
