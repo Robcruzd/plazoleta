@@ -9,6 +9,8 @@ import com.pragma.plazoleta.domain.spi.IMessagingFeignPersistencePort;
 import com.pragma.plazoleta.domain.spi.IOrderPersistencePort;
 import com.pragma.plazoleta.domain.spi.IStatusOrderPersistencePort;
 import com.pragma.plazoleta.domain.spi.IUsersFeignPersistencePort;
+import com.pragma.plazoleta.infrastructue.exception.RequestException;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Random;
@@ -54,6 +56,19 @@ public class OrderUseCase implements IOrderServicePort {
         orderPersistencePort.updateOrderReady(orderModel);
         String message = "Su pin de seguridad es: " + securityPin;
         messagingFeignPersistencePort.sendSms(userRequestDto.getCellPhone(), message);
+    }
+
+    @Override
+    public void updateOrderDeliver(OrderModel orderModel, String token) {
+        if(orderModel.getStatus().getId() != 3 && orderModel.getStatus().getId() != 4)
+            throw new RequestException("status not allowed", HttpStatus.BAD_REQUEST);
+        int statusId = 4;
+        if(orderModel.getStatus().getId() == 4) // If the status is delivered, it change to ready
+            statusId = 3;
+        StatusOrderModel statusOrderModel = statusOrderPersistencePort.findStatusOrderById(statusId);
+        orderModel.setStatus(statusOrderModel);
+        orderModel.setSecurityPin("delivered");
+        orderPersistencePort.updateOrderReady(orderModel);
     }
 
     public static String generatePin() {

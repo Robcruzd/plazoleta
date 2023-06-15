@@ -44,6 +44,6 @@ public class OrderEntity {
     @Column(name = "restaurant_id")
     private Long restaurantId;
 
-    @Column(name = "security_pin", length = 6)
+    @Column(name = "security_pin", length = 9)
     private String securityPin;
 }

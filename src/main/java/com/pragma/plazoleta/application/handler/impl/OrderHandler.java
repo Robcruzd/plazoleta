@@ -2,6 +2,7 @@ package com.pragma.plazoleta.application.handler.impl;
 
 import com.pragma.plazoleta.application.dto.request.OrderRequestDto;
 import com.pragma.plazoleta.application.dto.request.RestaurantEmployeeRequestDto;
+import com.pragma.plazoleta.application.dto.request.UpdateOrderDeliverRequestDto;
 import com.pragma.plazoleta.application.dto.request.UpdateOrderRequestDto;
 import com.pragma.plazoleta.application.dto.response.OrderDishesResponseDto;
 import com.pragma.plazoleta.application.dto.response.OrderResponseDto;
@@ -86,8 +87,18 @@ public class OrderHandler implements IOrderHandler {
     @Override
     public void updateOrderReady(UpdateOrderRequestDto updateOrderRequestDto, String token) {
         try {
-            OrderModel orderModel = validateOrderWithEmployee.validate(token, updateOrderRequestDto.getId());
+            OrderModel orderModel = validateOrderWithEmployee.validate(token, updateOrderRequestDto.getId(), null);
             orderServicePort.updateOrderReady(orderModel, token);
+        } catch (DomainException | RequestException e) {
+            throw new ApplicationException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateOrderDeliver(UpdateOrderDeliverRequestDto updateOrderDeliverRequestDto, String token) {
+        try {
+            OrderModel orderModel = validateOrderWithEmployee.validate(token, updateOrderDeliverRequestDto.getId(), updateOrderDeliverRequestDto.getSecurityPin());
+            orderServicePort.updateOrderDeliver(orderModel, token);
         } catch (DomainException | RequestException e) {
             throw new ApplicationException(e.getMessage());
         }

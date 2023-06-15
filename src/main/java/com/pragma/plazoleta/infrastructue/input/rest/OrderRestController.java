@@ -1,9 +1,9 @@
 package com.pragma.plazoleta.infrastructue.input.rest;
 
 import com.pragma.plazoleta.application.dto.request.OrderRequestDto;
+import com.pragma.plazoleta.application.dto.request.UpdateOrderDeliverRequestDto;
 import com.pragma.plazoleta.application.dto.request.UpdateOrderRequestDto;
 import com.pragma.plazoleta.application.dto.response.OrderResponseDto;
-import com.pragma.plazoleta.application.dto.response.RestaurantListResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IOrderHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,17 +63,17 @@ public class OrderRestController {
         }
     }
 
-    @Operation(summary = "Update order")
+    @Operation(summary = "Update orders")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Order updated successfuly", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Failed to update order", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Orders updated successfuly", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Failed to update orders", content = @Content),
             @ApiResponse(responseCode = "403", description = "User not authorized", content = @Content)
     })
     @PutMapping("/")
     public ResponseEntity<String> updateOrders(@RequestHeader("Authorization") String token, @RequestBody List<UpdateOrderRequestDto> updateOrderRequestDto) {
         try {
             orderHandler.updateOrders(updateOrderRequestDto, token);
-            return ResponseEntity.ok("Order updated succesfully");
+            return ResponseEntity.ok("Orders updated succesfully");
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -89,7 +89,23 @@ public class OrderRestController {
     public ResponseEntity<String> updateOrderReady(@RequestHeader("Authorization") String token, @RequestBody UpdateOrderRequestDto updateOrderRequestDto) {
         try {
             orderHandler.updateOrderReady(updateOrderRequestDto, token);
-            return ResponseEntity.ok("Order updated succesfully");
+            return ResponseEntity.ok("Order ready updated succesfully");
+        } catch (ApplicationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Update order deliver")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order updated successfuly", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Failed to update order", content = @Content),
+            @ApiResponse(responseCode = "403", description = "User not authorized", content = @Content)
+    })
+    @PutMapping("/deliver")
+    public ResponseEntity<String> updateOrderDeliver(@RequestHeader("Authorization") String token, @RequestBody UpdateOrderDeliverRequestDto updateOrderDeliverRequestDto) {
+        try {
+            orderHandler.updateOrderDeliver(updateOrderDeliverRequestDto, token);
+            return ResponseEntity.ok("Order deliver updated succesfully");
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

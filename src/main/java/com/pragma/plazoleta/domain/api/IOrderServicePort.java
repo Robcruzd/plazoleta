@@ -15,4 +15,6 @@ public interface IOrderServicePort {
     void updateOrders(Long userId, List<OrderModel> orderModelList);
 
     void updateOrderReady(OrderModel orderModel, String token);
+
+    void updateOrderDeliver(OrderModel orderModel, String token);
 }

@@ -1,6 +1,7 @@
 package com.pragma.plazoleta.application.handler;
 
 import com.pragma.plazoleta.application.dto.request.OrderRequestDto;
+import com.pragma.plazoleta.application.dto.request.UpdateOrderDeliverRequestDto;
 import com.pragma.plazoleta.application.dto.request.UpdateOrderRequestDto;
 import com.pragma.plazoleta.application.dto.response.OrderResponseDto;
 
@@ -15,4 +16,6 @@ public interface IOrderHandler {
     void updateOrders(List<UpdateOrderRequestDto> updateOrderRequestDtoList, String token);
 
     void updateOrderReady(UpdateOrderRequestDto updateOrderRequestDto, String token);
+
+    void updateOrderDeliver(UpdateOrderDeliverRequestDto updateOrderDeliverRequestDto, String token);
 }
