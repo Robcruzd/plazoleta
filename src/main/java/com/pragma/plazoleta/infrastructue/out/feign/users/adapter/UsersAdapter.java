@@ -31,10 +31,10 @@ public class UsersAdapter implements IUsersFeignPersistencePort {
         try {
             ResponseEntity<Long> response = usersClient.saveUserEmployee(token, userRequestDto);
             return response.getBody();
-        } catch (FeignException.BadRequest e) {
+        } catch (FeignException.BadRequest | IllegalArgumentException e) {
             throw new RequestException("User no created for bad request", HttpStatus.BAD_REQUEST);
         } catch (FeignException e) {
-            throw new RequestException("User no created", HttpStatus.valueOf(e.status()));
+            throw new RequestException("User no created", HttpStatus.BAD_REQUEST);
         }
     }
 }

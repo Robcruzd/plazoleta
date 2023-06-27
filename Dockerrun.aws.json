@@ -1,0 +1,14 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "680989793215.dkr.ecr.us-east-1.amazonaws.com/plazoleta:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 8082,
+      "HostPort": 8082
+    }
+  ],
+  "Logging": "/var/log/nginx"
+}

@@ -9,6 +9,7 @@ import com.pragma.plazoleta.application.dto.response.DishResponseDto;
 import com.pragma.plazoleta.application.dto.response.RestaurantListResponseDto;
 import com.pragma.plazoleta.application.exception.ApplicationException;
 import com.pragma.plazoleta.application.handler.IDishHandler;
+import com.pragma.plazoleta.infrastructue.out.ssmParameters.client.ISsmClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,6 +35,7 @@ import java.util.List;
 public class DishRestController {
 
     private final IDishHandler dishHandler;
+    private final ISsmClient ssmClient;
 
     @Operation(summary = "Agregar plato")
     @ApiResponses(value = {
@@ -45,7 +47,7 @@ public class DishRestController {
                                            @RequestBody DishRequestDto dishRequestDto) {
         try {
             dishHandler.saveDish(dishRequestDto, token);
-            return ResponseEntity.ok("Plato creado exitosamente");
+            return ResponseEntity.ok(ssmClient.getParameter("/plazoleta/controller/dish/saveDish"));
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -61,7 +63,7 @@ public class DishRestController {
                                              @RequestBody DishUpdateRequestDto dishUpdateRequestDto) {
         try {
             dishHandler.updateDish(dishUpdateRequestDto, token);
-            return ResponseEntity.ok("Plato actualizado exitosamente");
+            return ResponseEntity.ok(ssmClient.getParameter("/plazoleta/controller/dish/updateDish"));
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -94,7 +96,7 @@ public class DishRestController {
                                              @RequestBody DishEnableDisableRequestDto dishEnableDisableRequestDto) {
         try {
             dishHandler.enableDisableDish(dishEnableDisableRequestDto, token);
-            return ResponseEntity.ok("Plato actualizado exitosamente");
+            return ResponseEntity.ok(ssmClient.getParameter("/plazoleta/controller/dish/enableDisableDish"));
         } catch (ApplicationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

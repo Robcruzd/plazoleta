@@ -102,7 +102,9 @@ class OrderHandlerTest {
         orderDishesResponseDto.setDishId(1L);
         orderDishesResponseDtoList.add(orderDishesResponseDto);
 
-//        when(validateRestaurantEmployee.validate(token)).thenReturn(restaurantId);
+        RestaurantEmployeeRequestDto restaurantEmployeeRequestDto = new RestaurantEmployeeRequestDto(1l, 1l);
+
+        when(validateRestaurantEmployee.validate(token)).thenReturn(restaurantEmployeeRequestDto);
         when(orderServicePort.listOrders(restaurantId, status, page, size)).thenReturn(orderModelList);
         when(orderResponseMapper.toOrderDto(orderModelList)).thenReturn(orderResponseDtoList);
         when(orderDishesHandler.findOrderDishesByOrderId(orderResponseDto.getId())).thenReturn(orderDishesResponseDtoList);

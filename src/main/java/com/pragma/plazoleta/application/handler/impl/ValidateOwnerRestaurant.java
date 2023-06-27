@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class ValidateOwnerRestaurant implements IValidateOwnerRestaurant {
@@ -25,7 +27,7 @@ public class ValidateOwnerRestaurant implements IValidateOwnerRestaurant {
 
         Long ownerId = jwtService.extractUserId(jwt);
 
-        if (restaurant.getOwnerId() != ownerId)
+        if (!Objects.equals(restaurant.getOwnerId(), ownerId))
             throw new RequestException("El restaurante no pertenece a este propietario",
                     HttpStatus.BAD_REQUEST);
     }

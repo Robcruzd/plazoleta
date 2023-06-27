@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.12'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id "jacoco"
+	id 'org.sonarqube' version '4.2.1.3168'
 }
 
 group = 'com.pragma'
@@ -17,6 +19,7 @@ configurations {
 repositories {
 	mavenCentral()
 	maven { url 'https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates' }
+	maven { url 'https://repo.spring.io/plugins-release' }
 }
 
 dependencies {
@@ -30,10 +33,13 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+	implementation 'com.amazonaws:aws-java-sdk-ssm:1.12.494'
+	implementation 'software.amazon.awssdk:ssm:2.20.91'
 
 	compileOnly 'org.projectlombok:lombok'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'software.amazon.awssdk:bom:2.20.89'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -44,6 +50,24 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
 }
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+	}
+}
+
+sonar {
+	properties {
+		property 'sonar.login', '80fdf013db84a192c45219cdfd8bef9c772f5465'
+		property "sonar.projectKey", "robcruzd-pragma1_plazoleta"
+		property "sonar.organization", "robcruzd-pragma1"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.jacoco.reportPaths", "plazoleta/build/jacoco/test.exec"
+		property "sonar.junit.reportsPath", "plazoleta/build/test-results/*/TEST-*.xml"
+	}
+}
+
 
 tasks.named('test') {
 	useJUnitPlatform()

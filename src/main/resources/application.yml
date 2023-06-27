@@ -12,5 +12,43 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  cloud:
+    aws:
+      parameter-store:
+        enabled: true
+        prefix: /plazoleta
+        default-context: database
+  db:
+    password: ${/password}
+
+#sonar:
+#  projectKey: plazoleta
+#  organization: robcruzd-pragma
+#  host:
+#    url:https://sonarcloud.io
+#  sources: src/main
+#  java:
+#    binaries: build/classes
+
+cloud:
+  aws:
+    credentials:
+      profile-name: stratospheric
+    region:
+      static: us-east-1
+      auto: false
+
 appDescription: "Pragma Usuario Plazoleta"
 appVersion: "1.0.0"
+
+#spring:
+#  cloud:
+#    aws:
+#      parameter-store:
+#        enabled: true
+#        prefix: /plazoleta
+#        default-context: database
+#
+#  db:
+#    password: ${/password}
