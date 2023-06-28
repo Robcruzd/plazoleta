@@ -31,17 +31,17 @@ jobs:
       - name: Run tests and generate coverage report
         run: ./gradlew test jacocoTestReport sonar --no-daemon
 
-      - name: Login to AWS ECR
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-          region: ${{ env.AWS_REGION }}
-
-      - name: Build and tag Docker image
-        run: |
-          docker build -t $IMAGE_NAME .
-          docker tag $IMAGE_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME
-
-      - name: Push Docker image to ECR
-        run: |
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME
+#      - name: Login to AWS ECR
+#        uses: aws-actions/amazon-ecr-login@v1
+#        with:
+#          registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+#          region: ${{ env.AWS_REGION }}
+#
+#      - name: Build and tag Docker image
+#        run: |
+#          docker build -t $IMAGE_NAME .
+#          docker tag $IMAGE_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME
+#
+#      - name: Push Docker image to ECR
+#        run: |
+#          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME
