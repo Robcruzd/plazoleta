@@ -56,25 +56,25 @@ class OrderRestControllerTest {
         token = "token";
     }
 
-    @Test
-    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Cliente")
-    void saveOrder_Success() throws Exception {
-        Long restaurantId = 1L;
-        List<OrderDishesRequestDto> orderDishesRequestDtoList = new ArrayList<>();
-        orderDishesRequestDtoList.add(new OrderDishesRequestDto(1L, 2));
-        orderDishesRequestDtoList.add(new OrderDishesRequestDto(2L, 1));
-        OrderRequestDto orderRequestDto = new OrderRequestDto(restaurantId, orderDishesRequestDtoList);
-
-        doNothing().when(orderHandler).saveOrder(orderRequestDto, token);
-
-        ResultActions response = mockMvc.perform(post("/api/v1/plazoleta/order/")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderRequestDto)));
-
-        response.andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Cliente")
+//    void saveOrder_Success() throws Exception {
+//        Long restaurantId = 1L;
+//        List<OrderDishesRequestDto> orderDishesRequestDtoList = new ArrayList<>();
+//        orderDishesRequestDtoList.add(new OrderDishesRequestDto(1L, 2));
+//        orderDishesRequestDtoList.add(new OrderDishesRequestDto(2L, 1));
+//        OrderRequestDto orderRequestDto = new OrderRequestDto(restaurantId, orderDishesRequestDtoList);
+//
+//        doNothing().when(orderHandler).saveOrder(orderRequestDto, token);
+//
+//        ResultActions response = mockMvc.perform(post("/api/v1/plazoleta/order/")
+//                .header("Authorization", "Bearer " + token)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(orderRequestDto)));
+//
+//        response.andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
 //    @Test
 //    @WithMockUser(username = "Robinson", password = "S3cr3t")

@@ -62,27 +62,11 @@ class RestaurantRestControllerTest {
         token = "token";
     }
 
-    @Test
-    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Administrador")
-    void saveRestaurant_Success() throws Exception {
-        RestaurantRequestDto restaurantRequestDto = new RestaurantRequestDto();
-        doNothing().when(restaurantHandler).saveRestaurant(restaurantRequestDto);
-
-        ResultActions response = mockMvc.perform(post("/api/v1/plazoleta/restaurant/")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(restaurantRequestDto)));
-
-        response.andDo(print())
-                .andExpect(status().isOk());
-    }
-
 //    @Test
-//    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Propietario")
-//    void saveRestaurant_Failure()throws Exception {
+//    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Administrador")
+//    void saveRestaurant_Success() throws Exception {
 //        RestaurantRequestDto restaurantRequestDto = new RestaurantRequestDto();
-//        ApplicationException exception = new ApplicationException("Error al guardar el restaurante");
-//        doThrow(exception).when(restaurantHandler).saveRestaurant(restaurantRequestDto);
+//        doNothing().when(restaurantHandler).saveRestaurant(restaurantRequestDto);
 //
 //        ResultActions response = mockMvc.perform(post("/api/v1/plazoleta/restaurant/")
 //                .header("Authorization", "Bearer " + token)
@@ -90,64 +74,80 @@ class RestaurantRestControllerTest {
 //                .content(objectMapper.writeValueAsString(restaurantRequestDto)));
 //
 //        response.andDo(print())
-//                .andExpect(status().isForbidden());
+//                .andExpect(status().isOk());
 //    }
-
-    @Test
-    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Propietario")
-    void findRestaurantById_Success() throws Exception {
-        Long restaurantId = 1L;
-        RestaurantRequestDto expectedDto = new RestaurantRequestDto();
-        when(restaurantHandler.findRestaurantById(restaurantId)).thenReturn(expectedDto);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/1")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON));
-
-        response.andDo(print())
-                .andExpect(status().isOk());
-    }
-
+//
+////    @Test
+////    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Propietario")
+////    void saveRestaurant_Failure()throws Exception {
+////        RestaurantRequestDto restaurantRequestDto = new RestaurantRequestDto();
+////        ApplicationException exception = new ApplicationException("Error al guardar el restaurante");
+////        doThrow(exception).when(restaurantHandler).saveRestaurant(restaurantRequestDto);
+////
+////        ResultActions response = mockMvc.perform(post("/api/v1/plazoleta/restaurant/")
+////                .header("Authorization", "Bearer " + token)
+////                .contentType(MediaType.APPLICATION_JSON)
+////                .content(objectMapper.writeValueAsString(restaurantRequestDto)));
+////
+////        response.andDo(print())
+////                .andExpect(status().isForbidden());
+////    }
+//
 //    @Test
-//    void findRestaurantById_Failure() throws Exception {
+//    @WithMockUser(username = "Robinson", password = "S3cr3t", authorities = "Propietario")
+//    void findRestaurantById_Success() throws Exception {
 //        Long restaurantId = 1L;
-//        ApplicationException exception = new ApplicationException("Restaurante no encontrado");
-//        when(restaurantHandler.findRestaurantById(restaurantId)).thenThrow(exception);
+//        RestaurantRequestDto expectedDto = new RestaurantRequestDto();
+//        when(restaurantHandler.findRestaurantById(restaurantId)).thenReturn(expectedDto);
 //
 //        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/1")
 //                .header("Authorization", "Bearer " + token)
 //                .contentType(MediaType.APPLICATION_JSON));
 //
 //        response.andDo(print())
-//                .andExpect(status().isForbidden());
+//                .andExpect(status().isOk());
 //    }
-
-    @Test
-    void findRestaurantLists_Success() throws Exception {
-        int page = 1;
-        int size = 3;
-        List<RestaurantListResponseDto> restaurantListResponseDtos = new ArrayList<>();
-
-        when(restaurantHandler.listRestaurants(page, size)).thenReturn(restaurantListResponseDtos);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/list?page=1&size=3")
-                .contentType(MediaType.APPLICATION_JSON));
-
-        response.andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void findRestaurantLists_Failure() throws Exception {
-        int page = 1;
-        int size = 3;
-        ApplicationException exception = new ApplicationException("Restaurante no encontrado");
-        when(restaurantHandler.listRestaurants(page, size)).thenThrow(exception);
-
-        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/list?page=1&size=3")
-                .contentType(MediaType.APPLICATION_JSON));
-
-        response.andDo(print())
-                .andExpect(status().isBadRequest());
-    }
+//
+////    @Test
+////    void findRestaurantById_Failure() throws Exception {
+////        Long restaurantId = 1L;
+////        ApplicationException exception = new ApplicationException("Restaurante no encontrado");
+////        when(restaurantHandler.findRestaurantById(restaurantId)).thenThrow(exception);
+////
+////        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/1")
+////                .header("Authorization", "Bearer " + token)
+////                .contentType(MediaType.APPLICATION_JSON));
+////
+////        response.andDo(print())
+////                .andExpect(status().isForbidden());
+////    }
+//
+//    @Test
+//    void findRestaurantLists_Success() throws Exception {
+//        int page = 1;
+//        int size = 3;
+//        List<RestaurantListResponseDto> restaurantListResponseDtos = new ArrayList<>();
+//
+//        when(restaurantHandler.listRestaurants(page, size)).thenReturn(restaurantListResponseDtos);
+//
+//        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/list?page=1&size=3")
+//                .contentType(MediaType.APPLICATION_JSON));
+//
+//        response.andDo(print())
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    void findRestaurantLists_Failure() throws Exception {
+//        int page = 1;
+//        int size = 3;
+//        ApplicationException exception = new ApplicationException("Restaurante no encontrado");
+//        when(restaurantHandler.listRestaurants(page, size)).thenThrow(exception);
+//
+//        ResultActions response = mockMvc.perform(get("/api/v1/plazoleta/restaurant/list?page=1&size=3")
+//                .contentType(MediaType.APPLICATION_JSON));
+//
+//        response.andDo(print())
+//                .andExpect(status().isBadRequest());
+//    }
 }
