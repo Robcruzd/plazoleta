@@ -27,7 +27,9 @@ jobs:
           distribution: 'adopt'
 
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build --no-daemon
 
       - name: Run tests and generate coverage report
         run: ./gradlew test jacocoTestReport sonar --no-daemon
