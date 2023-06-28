@@ -2,8 +2,9 @@ name: Java CI with Gradle and Docker
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 env:
   AWS_REGION: us-east-1
